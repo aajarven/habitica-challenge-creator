@@ -2,6 +2,7 @@
 Routes for the web app
 """
 
+from flask import render_template
 from app import app
 
 
@@ -11,4 +12,4 @@ def index():
     """
     The index page: this will offer the challenge creation form.
     """
-    return "<h1>Habitica Challenge Creator</h1>"
+    return render_template("index.html")
