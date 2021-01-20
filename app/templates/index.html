@@ -14,5 +14,13 @@
 <body>
   <h1>Habitica Challenge Creator</h1>
   <p>There will be content later</p>
+  <form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.habitica_id.label }}<br>
+        {{ form.habitica_id(size=32) }}
+    </p>
+    <p>{{ form.create_challenge() }}</p>
+  </form>
 </body>
 </html>
