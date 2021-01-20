@@ -16,14 +16,18 @@
   <p>There will be content later</p>
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.habitica_id.label }}<br>
+      <div class="form_query">
+        <div class="form_label">
+          {{ form.habitica_id.label }}
+        </div>
         {% for error in form.habitica_id.errors %}
-          <span style="color: red;">[{{ error }}]</span><br>
+          <div class="form_error">{{ error }}</div>
         {% endfor %}
-        {{ form.habitica_id(size=32) }}
-    </p>
-    <p>{{ form.create_challenge() }}</p>
+        <div class="form_field">
+          {{ form.habitica_id() }}
+        </div>
+      </div>
+    <div class="form_submit">{{ form.create_challenge() }}</div>
   </form>
 
   {% with messages = get_flashed_messages() %}
