@@ -11,4 +11,11 @@ class ChallengeForm(FlaskForm):
         DataRequired("Field cannot be empty"),
         UUID("This does not look like a valid Habitica user ID"),
         ])
+    habitica_api_key = StringField("Habitica API key", validators=[
+        DataRequired("Field cannot be empty"),
+        UUID("This does not look like a valid API key"),
+        ])
+    challenge_data = StringField("Challenge data", validators=[
+        DataRequired("Field cannot be empty"),
+        ])
     create_challenge = SubmitField("Create a new challenge")

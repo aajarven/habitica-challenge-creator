@@ -1,3 +1,5 @@
+{% from "macros.html" import form_item with context %}
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -16,17 +18,9 @@
   <p>There will be content later</p>
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-      <div class="form_query">
-        <div class="form_label">
-          {{ form.habitica_id.label }}
-        </div>
-        {% for error in form.habitica_id.errors %}
-          <div class="form_error">{{ error }}</div>
-        {% endfor %}
-        <div class="form_field">
-          {{ form.habitica_id() }}
-        </div>
-      </div>
+    {{ form_item(form.habitica_id) }}
+    {{ form_item(form.habitica_api_key) }}
+    {{ form_item(form.challenge_data) }}
     <div class="form_submit">{{ form.create_challenge() }}</div>
   </form>
 
