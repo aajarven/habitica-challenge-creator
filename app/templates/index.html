@@ -18,9 +18,9 @@
   <p>There will be content later</p>
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-    {{ form_item(form.habitica_id) }}
-    {{ form_item(form.habitica_api_key) }}
-    {{ form_item(form.challenge_data) }}
+    {{ form_item(form.habitica_id, "uuid_input") }}
+    {{ form_item(form.habitica_api_key, "uuid_input") }}
+    {{ form_item(form.challenge_data, "big_textbox") }}
     <div class="form_submit">{{ form.create_challenge() }}</div>
   </form>
 

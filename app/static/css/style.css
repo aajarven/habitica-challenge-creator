@@ -19,6 +19,11 @@ div.form_submit {
 	margin: 1em 2em;
 }
 
-input#habitica_id {
+.uuid_input > input {
 	width: 25em;
+}
+
+.big_textbox > input {
+	width: 90%;
+	height: 20em;
 }

@@ -1,4 +1,4 @@
-{% macro form_item(field) -%}
+{% macro form_item(field, input_class) -%}
   <div class="form_query">
     <div class="form_label">
       {{ field.label }}
@@ -6,7 +6,7 @@
     {% for error in field.errors %}
       <div class="form_error">{{ error }}</div>
     {% endfor %}
-    <div class="form_field">
+    <div class="form_field {{ input_class }}">
       {{ field() }}
     </div>
   </div>
