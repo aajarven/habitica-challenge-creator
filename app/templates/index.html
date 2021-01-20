@@ -18,9 +18,21 @@
     {{ form.hidden_tag() }}
     <p>
         {{ form.habitica_id.label }}<br>
+        {% for error in form.habitica_id.errors %}
+          <span style="color: red;">[{{ error }}]</span><br>
+        {% endfor %}
         {{ form.habitica_id(size=32) }}
     </p>
     <p>{{ form.create_challenge() }}</p>
   </form>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div>{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
+
 </body>
 </html>

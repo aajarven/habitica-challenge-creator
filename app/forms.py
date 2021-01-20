@@ -8,6 +8,7 @@ class ChallengeForm(FlaskForm):
     A form for submitting challenge information.
     """
     habitica_id = StringField("Habitica user ID", validators=[
+        DataRequired("Field cannot be empty"),
         UUID("This does not look like a valid Habitica user ID"),
         ])
     create_challenge = SubmitField("Create a new challenge")
