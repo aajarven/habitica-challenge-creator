@@ -35,6 +35,13 @@ def valid_challenge_string():
             )
 
 
+@pytest.fixture
+def header():
+    return {"x-api-user": "fake-habitica-user-id",
+            "x-api-key": "fake-habitica-api-key",
+            "x-client": "fake-app-id"}
+
+
 # pylint: disable=redefined-outer-name
 def test_name(valid_challenge_string):
     """
@@ -122,3 +129,10 @@ def test_non_integer_prize():
     with pytest.raises(ValueError) as err:
         prize = creator.prize  # noqa: F841 pylint: disable=unused-variable
     assert "Invalid gem prize value 1.2 encountered" in str(err.value)
+
+
+def test_challenge_creation(valid_challenge_string, header):
+    """
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    creator.create_challenge(header)

@@ -1,3 +1,4 @@
 flask
 flask-wtf
+git+git://github.com/aajarven/habitica-helper.git#egg=habitica-helper
 python-dotenv

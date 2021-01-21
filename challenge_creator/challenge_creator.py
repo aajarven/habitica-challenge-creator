@@ -2,6 +2,8 @@
 Functionality for taking in user-supplied data and creating a challenge.
 """
 
+from habitica_helper.challenge import ChallengeTool
+
 
 class ChallengeCreator():
     """
@@ -20,6 +22,29 @@ class ChallengeCreator():
         """
         self._raw_data = data
         self._rows = self._raw_data.split("\n")
+        self._challenge = None
+
+    def create_challenge(self, header):
+        """
+        Create a challenge from the data if not already created.
+
+        A Challenge representing the challenge is returned to the caller.
+
+        :header: Habitica API header dict
+        :returns: The created Challenge
+        """
+        if not self._challenge:
+            tool = ChallengeTool(header)
+            challenge_data = {
+                    "group": self.guild,
+                    "name": self.name,
+                    "shortName": self.short_name,
+                    "summary": self.summary,
+                    "description": self.description,
+                    "prize": self.prize,
+                    }
+            self._challenge = tool.create_challenge(challenge_data)
+        return self._challenge
 
     @property
     def name(self):
