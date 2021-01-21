@@ -48,3 +48,10 @@ class ChallengeCreator():
         Return the description for the challenge.
         """
         return self._rows[3]
+
+    @property
+    def guild(self):
+        """
+        Return the guild to which the challenge belongs.
+        """
+        return self._rows[4]

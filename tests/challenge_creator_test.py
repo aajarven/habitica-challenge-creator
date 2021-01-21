@@ -66,3 +66,11 @@ def test_description(valid_challenge_string):
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.description == "And description here"
+
+
+def test_guild(valid_challenge_string):
+    """
+    Test that guild is parsed correctly from the data.
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.guild == "00000000-0000-4000-A000-000000000000"
