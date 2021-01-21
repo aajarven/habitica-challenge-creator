@@ -55,3 +55,14 @@ class ChallengeCreator():
         Return the guild to which the challenge belongs.
         """
         return self._rows[4]
+
+    @property
+    def prize(self):
+        """
+        Return the size of the gem prize for the challenge winner.
+        """
+        try:
+            return int(self._rows[6])
+        except ValueError as err:
+            raise ValueError("Invalid gem prize value {} encountered"
+                             "".format(self._rows[6])) from err

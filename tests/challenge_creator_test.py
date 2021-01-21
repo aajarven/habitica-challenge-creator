@@ -74,3 +74,51 @@ def test_guild(valid_challenge_string):
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.guild == "00000000-0000-4000-A000-000000000000"
+
+
+def test_prize(valid_challenge_string):
+    """
+    Test that guild is parsed correctly from the data.
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.prize == 123
+
+
+def test_non_numeric_prize():
+    """
+    Test that a descriptive exception is raised for challenges with bad prize.
+    """
+    challenge = ("Test challenge name\n"
+                 "test short name\n"
+                 "Summary here\n"
+                 "And description here\n"
+                 "00000000-0000-4000-A000-000000000000\n"
+                 "Creativity\n"
+                 "three\n"  # non-numerical prize!
+                 "Tasks\n"
+                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "End Tasks")
+    creator = ChallengeCreator(challenge)
+    with pytest.raises(ValueError) as err:
+        prize = creator.prize  # noqa: F841 pylint: disable=unused-variable
+    assert "Invalid gem prize value three encountered" in str(err.value)
+
+
+def test_non_integer_prize():
+    """
+    Test that a decimal prize is not accepted
+    """
+    challenge = ("Test challenge name\n"
+                 "test short name\n"
+                 "Summary here\n"
+                 "And description here\n"
+                 "00000000-0000-4000-A000-000000000000\n"
+                 "Creativity\n"
+                 "1.2\n"  # non-integer prize!
+                 "Tasks\n"
+                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "End Tasks")
+    creator = ChallengeCreator(challenge)
+    with pytest.raises(ValueError) as err:
+        prize = creator.prize  # noqa: F841 pylint: disable=unused-variable
+    assert "Invalid gem prize value 1.2 encountered" in str(err.value)
