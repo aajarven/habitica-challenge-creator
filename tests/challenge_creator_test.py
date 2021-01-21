@@ -36,6 +36,21 @@ def valid_challenge_string():
 
 
 @pytest.fixture
+def valid_challenge_dict():
+    """
+    Return the core data of the test challenge as a dict
+    """
+    return {
+        "group": "00000000-0000-4000-A000-000000000000",
+        "name": "Test challenge name",
+        "shortName": "test short name",
+        "summary": "Summary here",
+        "description": "And description here",
+        "prize": 123,
+        }
+
+
+@pytest.fixture
 def header():
     return {"x-api-user": "fake-habitica-user-id",
             "x-api-key": "fake-habitica-api-key",
@@ -131,8 +146,17 @@ def test_non_integer_prize():
     assert "Invalid gem prize value 1.2 encountered" in str(err.value)
 
 
-def test_challenge_creation(valid_challenge_string, header):
+def test_challenge_creation(valid_challenge_string, valid_challenge_dict,
+                            header, mocker):
     """
+    Ensure that challenge creation posts the correct data to Habitica API
     """
+    post_challenge = mocker.patch("habitica_helper.habrequest.post")
+    mocker.patch("habitica_helper.habrequest.get")
     creator = ChallengeCreator(valid_challenge_string)
     creator.create_challenge(header)
+
+    post_challenge.assert_called_once()
+    post_challenge.assert_called_with("https://habitica.com/api/v3/challenges",
+                                      data=valid_challenge_dict,
+                                      headers=header)
