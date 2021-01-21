@@ -25,7 +25,7 @@
     <div class="form_submit">{{ form.create_challenge(onclick="showLoading()") }}</div>
   </form>
 
-  <div id="working"><img src="{{ url_for('static', filename='loading.gif') }}", alt="The challenge is being created..."/></div>
+  <div id="working"><img src="{{ url_for('static', filename='loading.gif') }}" alt="The challenge is being created..."/></div>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
