@@ -10,6 +10,7 @@
   <meta name="description" content="Habitica Challenge Creator">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 
 </head>
 
@@ -21,8 +22,10 @@
     {{ form_item(form.habitica_id, "uuid_input") }}
     {{ form_item(form.habitica_api_key, "uuid_input") }}
     {{ form_item(form.challenge_data, "big_textbox") }}
-    <div class="form_submit">{{ form.create_challenge() }}</div>
+    <div class="form_submit">{{ form.create_challenge(onclick="showLoading()") }}</div>
   </form>
+
+  <div id="working"><img src="{{ url_for('static', filename='loading.gif') }}", alt="The challenge is being created..."/></div>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -32,5 +35,10 @@
     {% endif %}
   {% endwith %}
 
+  <script>
+    function showLoading(){
+      document.getElementById("working").style.display = "block"
+    }
+  </script>
 </body>
 </html>

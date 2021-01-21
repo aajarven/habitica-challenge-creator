@@ -22,3 +22,7 @@ div.form_submit {
 .uuid_input > input {
 	width: 25em;
 }
+
+#working {
+	display: none;
+}
