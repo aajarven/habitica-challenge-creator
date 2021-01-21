@@ -50,3 +50,11 @@ def test_short_name(valid_challenge_string):
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.short_name == "test short name"
+
+
+def test_summary(valid_challenge_string):
+    """
+    Test that the challenge summary is parsed correctly from the data.
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.summary == "Summary here"
