@@ -41,3 +41,10 @@ class ChallengeCreator():
         Return the summary for the challenge.
         """
         return self._rows[2]
+
+    @property
+    def description(self):
+        """
+        Return the description for the challenge.
+        """
+        return self._rows[3]

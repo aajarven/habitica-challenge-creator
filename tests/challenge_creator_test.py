@@ -58,3 +58,11 @@ def test_summary(valid_challenge_string):
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.summary == "Summary here"
+
+
+def test_description(valid_challenge_string):
+    """
+    Test that the challenge description is parsed correctly from the data.
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.description == "And description here"
