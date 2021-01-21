@@ -27,3 +27,10 @@ class ChallengeCreator():
         Return the name of the challenge in the string
         """
         return self._rows[0]
+
+    @property
+    def short_name(self):
+        """
+        Return the shortname for the challenge.
+        """
+        return self._rows[1]

@@ -35,9 +35,18 @@ def valid_challenge_string():
             )
 
 
+# pylint: disable=redefined-outer-name
 def test_name(valid_challenge_string):
     """
     Test that the challenge name is parsed correctly from the data.
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.name == "Test challenge name"
+
+
+def test_short_name(valid_challenge_string):
+    """
+    Test that the challenge shortname is parsed correctly from the data.
+    """
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.short_name == "test short name"
