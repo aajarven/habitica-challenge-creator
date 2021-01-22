@@ -4,7 +4,7 @@ Unit tests for ChallengeCreator
 
 import pytest
 
-from challenge_creator.challenge_creator import ChallengeCreator
+from functionality.challenge_creator import ChallengeCreator
 
 
 @pytest.fixture
