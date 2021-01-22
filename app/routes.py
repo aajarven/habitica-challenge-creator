@@ -15,10 +15,10 @@ def index():
     The index page: this will offer the challenge creation form.
     """
     challenge_form = ChallengeForm()
+    challenge_dict = None
     if challenge_form.validate_on_submit():
-        flash("Got challenge creation request from {}"
-              "".format(challenge_form.habitica_id.data))
         challenge_creator = ChallengeCreator(
                 challenge_form.challenge_data.data)
-        flash(challenge_creator.name)
-    return render_template("index.html", form=challenge_form)
+        challenge_dict = challenge_creator.to_ordered_dict()
+    return render_template("index.html", form=challenge_form,
+                           challenge_dict=challenge_dict)

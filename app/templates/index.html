@@ -27,13 +27,15 @@
 
   <div id="working"><img src="{{ url_for('static', filename='loading.gif') }}" alt="The challenge is being created..."/></div>
 
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-        <div>{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-  {% endwith %}
+  {% if challenge_dict %}
+    <h2>Challenge</h2>
+    <dl class="challenge">
+      {% for key, value in challenge_dict.items()  %}
+        <dt>{{ key }}</dt>
+        <dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  {% endif %}
 
   <script>
     function showLoading(){
