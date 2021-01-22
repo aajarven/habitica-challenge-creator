@@ -85,12 +85,58 @@ def test_summary(valid_challenge_string):
     assert creator.summary == "Summary here"
 
 
+def test_multi_line_summary():
+    """
+    Test that line breaks in summary are handled correctly.
+
+    All strings "\n" must be replaced with a newline.
+    """
+    challenge = ("Test challenge name\n"
+                 "test short name\n"
+                 "Summary here\\n\\nand another paragraph\\nsinglenewline\n"
+                 "And description here\n"
+                 "00000000-0000-4000-A000-000000000000\n"
+                 "Creativity\n"
+                 "three\n"  # non-numerical prize!
+                 "Tasks\n"
+                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "End Tasks")
+    expected_summary = ("Summary here\n\n"
+                        "and another paragraph\n"
+                        "singlenewline")
+    creator = ChallengeCreator(challenge)
+    assert creator.summary == expected_summary
+
+
 def test_description(valid_challenge_string):
     """
     Test that the challenge description is parsed correctly from the data.
     """
     creator = ChallengeCreator(valid_challenge_string)
     assert creator.description == "And description here"
+
+
+def test_multi_line_description():
+    """
+    Test that line breaks in description are handled correctly.
+
+    All strings "\n" must be replaced with a newline.
+    """
+    challenge = ("Test challenge name\n"
+                 "test short name\n"
+                 "Summary here\n"
+                 "And description here\\nwith some newlines\\n\\nparagraph\n"
+                 "00000000-0000-4000-A000-000000000000\n"
+                 "Creativity\n"
+                 "three\n"  # non-numerical prize!
+                 "Tasks\n"
+                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "End Tasks")
+    expected_description = ("And description here\n"
+                            "with some newlines\n\n"
+                            "paragraph")
+    creator = ChallengeCreator(challenge)
+    assert creator.description == expected_description
 
 
 def test_guild(valid_challenge_string):

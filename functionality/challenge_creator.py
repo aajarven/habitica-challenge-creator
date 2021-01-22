@@ -13,6 +13,8 @@ class ChallengeCreator():
     https://github.com/Memry/Challenge-Creator
     """
 
+    NEWLINE = "\\n"
+
     def __init__(self, data):
         """
         Create the class.
@@ -64,15 +66,20 @@ class ChallengeCreator():
     def summary(self):
         """
         Return the summary for the challenge.
+
+        For a multi-paragraph summary, '\n' can be used to mark a line break.
         """
-        return self._rows[2]
+        return self._rows[2].replace(self.NEWLINE, "\n")
 
     @property
     def description(self):
         """
         Return the description for the challenge.
+
+        For a multi-paragraph description, '\n' can be used to mark a line
+        break.
         """
-        return self._rows[3]
+        return self._rows[3].replace(self.NEWLINE, "\n")
 
     @property
     def guild(self):
