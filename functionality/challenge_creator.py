@@ -2,6 +2,8 @@
 Functionality for taking in user-supplied data and creating a challenge.
 """
 
+from collections import OrderedDict
+
 from habitica_helper.challenge import ChallengeTool
 
 
@@ -98,3 +100,19 @@ class ChallengeCreator():
         except ValueError as err:
             raise ValueError("Invalid gem prize value {} encountered"
                              "".format(self._rows[6])) from err
+
+    def to_ordered_dict(self):
+        """
+        Return the properties of the challenge in an OrderedDict.
+
+        The order of the keys is chosen such that listing them and their values
+        in order gives a nicely readable description of the challenge.
+        """
+        return OrderedDict([
+                ("Name", self.name),
+                ("Short name", self.short_name),
+                ("Summary", self.summary),
+                ("Description", self.description),
+                ("Guild", self.guild),
+                ("Prize", self.prize),
+                ])

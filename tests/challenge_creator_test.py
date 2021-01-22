@@ -2,6 +2,7 @@
 Unit tests for ChallengeCreator
 """
 
+from collections import OrderedDict
 import pytest
 
 from functionality.challenge_creator import ChallengeCreator
@@ -209,3 +210,18 @@ def test_challenge_creation(valid_challenge_string, valid_challenge_dict,
     post_challenge.assert_called_with("https://habitica.com/api/v3/challenges",
                                       data=valid_challenge_dict,
                                       headers=header)
+
+def test_to_ordered_dict(valid_challenge_string):
+    """
+    Ensure that the dict representation of the challenge matches the input.
+    """
+    expected_dict = OrderedDict([
+        ("Name", "Test challenge name"),
+        ("Short name", "test short name"),
+        ("Summary", "Summary here"),
+        ("Description", "And description here"),
+        ("Guild", "00000000-0000-4000-A000-000000000000"),
+        ("Prize", 123),
+        ])
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator.to_ordered_dict() == expected_dict
