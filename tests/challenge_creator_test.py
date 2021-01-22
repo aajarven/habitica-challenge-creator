@@ -52,6 +52,9 @@ def valid_challenge_dict():
 
 @pytest.fixture
 def header():
+    """
+    Return a header with fields matching the API but bogus values.
+    """
     return {"x-api-user": "fake-habitica-user-id",
             "x-api-key": "fake-habitica-api-key",
             "x-client": "fake-app-id"}
