@@ -22,7 +22,10 @@
     {{ form_item(form.habitica_id, "uuid_input") }}
     {{ form_item(form.habitica_api_key, "uuid_input") }}
     {{ form_item(form.challenge_data, "big_textbox") }}
-    <div class="form_submit">{{ form.create_challenge(onclick="showLoading()") }}</div>
+    <div class="form_submit">
+      {{ form.show_challenge(onclick="showLoading()") }}
+      {{ form.create_challenge(onclick="showLoading()") }}
+    </div>
   </form>
 
   <div id="working"><img src="{{ url_for('static', filename='loading.gif') }}" alt="The challenge is being created..."/></div>

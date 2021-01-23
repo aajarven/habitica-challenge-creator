@@ -20,4 +20,5 @@ class ChallengeForm(FlaskForm):  # pylint: disable=too-few-public-methods
             "Challenge data", widget=TextArea(),
             validators=[DataRequired("Field cannot be empty")],
             render_kw={"rows": 50, "cols": 120})
-    create_challenge = SubmitField("Create a new challenge")
+    create_challenge = SubmitField("Create")
+    show_challenge = SubmitField("Show")
