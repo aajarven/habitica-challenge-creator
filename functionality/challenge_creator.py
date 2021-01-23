@@ -55,14 +55,14 @@ class ChallengeCreator():
         """
         Return the name of the challenge in the string
         """
-        return self._rows[0]
+        return self._rows[0].strip()
 
     @property
     def short_name(self):
         """
         Return the shortname for the challenge.
         """
-        return self._rows[1]
+        return self._rows[1].strip()
 
     @property
     def summary(self):
@@ -71,7 +71,7 @@ class ChallengeCreator():
 
         For a multi-paragraph summary, '\n' can be used to mark a line break.
         """
-        return self._rows[2].replace(self.NEWLINE, "\n")
+        return self._rows[2].strip().replace(self.NEWLINE, "\n")
 
     @property
     def description(self):
@@ -81,14 +81,14 @@ class ChallengeCreator():
         For a multi-paragraph description, '\n' can be used to mark a line
         break.
         """
-        return self._rows[3].replace(self.NEWLINE, "\n")
+        return self._rows[3].strip().replace(self.NEWLINE, "\n")
 
     @property
     def guild(self):
         """
         Return the guild to which the challenge belongs.
         """
-        return self._rows[4]
+        return self._rows[4].strip()
 
     @property
     def prize(self):
