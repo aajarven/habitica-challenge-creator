@@ -20,5 +20,9 @@ def index():
         challenge_creator = ChallengeCreator(
                 challenge_form.challenge_data.data)
         challenge_dict = challenge_creator.to_ordered_dict()
+        if challenge_form.create_challenge.data:
+            flash("Creating a new challenge")
+        if challenge_form.show_challenge.data:
+            flash("Showing the challenge")
     return render_template("index.html", form=challenge_form,
                            challenge_dict=challenge_dict)
