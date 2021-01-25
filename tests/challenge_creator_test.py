@@ -195,6 +195,21 @@ def test_non_integer_prize():
         prize = creator.prize  # noqa: F841 pylint: disable=unused-variable
     assert "Invalid gem prize value 1.2 encountered" in str(err.value)
 
+def test_task_strings(valid_challenge_string):
+    """
+    Test that the private _task_strings function extracts the correct lines.
+    """
+    expected_task_strings = [
+        "Daily;Daily 1;An easy everyday task;Easy;1/1/2021;Weekly;1;SMTWHFA",
+        "Habit;Habit 1;A medium habit;Medium;2/12/2021",
+        "Daily;Daily 2;A hard daily for weekdays;Hard;1/1/2021;Weekly;1;MTWHF",
+        "Habit;To-Do 1;A hard todo, due by the end of February;Hard;2/28/2021",
+        "Daily;To-Do 2;An easy daily to be done on the 15th of February;"
+        "Easy;2/15/2021;Weekly;1;0",
+        "Habit;Habit 2;A medium habit starting on February 1st;Medium;2/1/2021"
+        ]
+    creator = ChallengeCreator(valid_challenge_string)
+    assert creator._task_strings() == expected_task_strings
 
 def test_challenge_creation(valid_challenge_string, valid_challenge_dict,
                             header, mocker):

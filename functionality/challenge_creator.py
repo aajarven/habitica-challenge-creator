@@ -101,6 +101,12 @@ class ChallengeCreator():
             raise ValueError("Invalid gem prize value {} encountered"
                              "".format(self._rows[6])) from err
 
+    def _task_strings(self):
+        """
+        Return a list of task specifications from the input data.
+        """
+        return self._rows[8:-1]
+
     def to_ordered_dict(self):
         """
         Return the properties of the challenge in an OrderedDict.
