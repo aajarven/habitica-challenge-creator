@@ -16,16 +16,18 @@ class TaskParser():
         """
         self._task_str = task_str
 
+    @property
     def task_type(self):
         """
         Return the task type.
         """
         return self._task_str.split(";")[0]
-        # TODO: validation, tests
+        # TODO: validation
 
+    @property
     def name(self):
         """
         Return the name of the task.
         """
         return self._task_str.split(";")[1]
-        # TODO: validation, tests
+        # TODO: validation
