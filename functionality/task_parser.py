@@ -2,6 +2,8 @@
 Extract the task data from user input.
 """
 
+import datetime
+
 
 class TaskParser():
     """
@@ -108,6 +110,49 @@ class HabitParser(DifficultyParser):
             raise TaskTypeError("Attempted to parse a task with type "
                                 "'{}' using a parser for habits."
                                 "".format(self.task_type))
+
+
+class TodoParser(DifficultyParser):
+    """
+    A parser for todo type tasks.
+    """
+
+    @property
+    def date(self):
+        """
+        Due date for the task as a Date object.
+
+        Given in format MM/DD/YYY.
+        """
+        date_str = self._task_str.split(";")[4].strip()
+        try:
+            return datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
+        except ValueError as err:
+            raise (
+                TaskFormatError("Unexpected due date value '{}' encountered. "
+                                "Dates must be given in format MM/DD/YYYY."
+                                "".format(date_str))
+                ) from err
+
+    def validate(self):
+        """
+        In addition to all checks done by DifficultyParser, checks that:
+        - task type is "todo"
+        - task has a valid due date
+        """
+        super().validate()
+        if self.task_type != "todo":
+            raise TaskTypeError("Attempted to parse a task with type "
+                                "'{}' using a parser for todos."
+                                "".format(self.task_type))
+        if len(self._task_str.split(";")) != 5:
+            raise TaskFormatError("Task string '{}' does not seem to "
+                                  "contain a valid todo: they must "
+                                  "have at least five attributes (type, "
+                                  "title, notes, difficulty and due date) "
+                                  "separated by a semicolon (;)"
+                                  "".format(self._task_str))
+        self.date  # pylint: disable=pointless-statement
 
 
 class TaskFormatError(ValueError):

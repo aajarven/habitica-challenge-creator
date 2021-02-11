@@ -2,11 +2,13 @@
 Tests for task parsing classes.
 """
 
+import datetime
+
 import pytest
 
 from functionality.task_parser import (
-        TaskParser, DifficultyParser, HabitParser, TaskFormatError,
-        TaskTypeError)
+        TaskParser, DifficultyParser, HabitParser, TodoParser,
+        TaskFormatError, TaskTypeError)
 
 
 @pytest.mark.parametrize(
@@ -119,3 +121,43 @@ def test_habit_parser_type_validation():
     with pytest.raises(TaskTypeError) as err:
         HabitParser("todo;wrong type habit; note; hard")
     assert "task with type 'todo' using a parser for habits" in str(err.value)
+
+
+def test_todo_parser():
+    """
+    Parse a valid todo
+    """
+    parser = TodoParser("todo; name; notes; medium; 12/29/2020")
+    assert parser.task_type == "todo"
+    assert parser.name == "name"
+    assert parser.notes == "notes"
+    assert parser.difficulty == "medium"
+    assert isinstance(parser.date, datetime.date)
+    assert parser.date == datetime.date(2020, 12, 29)
+
+
+def test_todo_no_due_date():
+    """
+    Ensure that a TaskFormatError is raised when due date is not given
+    """
+    with pytest.raises(TaskFormatError) as err:
+        TodoParser("todo; name; no due date; medium")
+    assert "does not seem to contain a valid todo" in str(err.value)
+
+
+def test_todo_invalid_due_date():
+    """
+    Ensure that a TaskFormatError is raised when date cannot be parsed
+    """
+    with pytest.raises(TaskFormatError) as err:
+        TodoParser("todo; name; notes; medium; yesterday")
+    assert "Unexpected due date" in str(err.value)
+
+
+def test_todo_parser_wrong_type():
+    """
+    Ensure that a TaskTypeError raises when a non-todo is TodoParsed.
+    """
+    with pytest.raises(TaskTypeError) as err:
+        TodoParser("habit;wrong type todo; note; hard")
+    assert "task with type 'habit' using a parser for todos" in str(err.value)
