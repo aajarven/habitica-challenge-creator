@@ -22,14 +22,21 @@ class TaskParser():
         """
         Return the task type.
         """
-        return self._task_str.split(";")[0].lower()
+        return self._task_str.split(";")[0].lower().strip()
 
     @property
     def name(self):
         """
         Return the name of the task.
         """
-        return self._task_str.split(";")[1]
+        return self._task_str.split(";")[1].strip()
+
+    @property
+    def notes(self):
+        """
+        Return task notes.
+        """
+        return self._task_str.split(";")[2].strip()
 
     def validate(self):
         """
@@ -38,13 +45,8 @@ class TaskParser():
         Only checks that the task contains at least two parts separated with a
         semicolon.
         """
-        if len(self._task_str.split(";")) < 2:
+        if len(self._task_str.split(";")) < 3:
             raise TaskFormatError("Task string {} does not seem to contain "
-                                  "a valid task with task type and task name "
-                                  "in it, separated by a semicolon (;).")
-
-
-class TaskFormatError(ValueError):
-    """
-    Error for signaling that faulty task format was encountered
-    """
+                                  "a valid task with task type, name and note"
+                                  "in it, separated by a semicolon (;)."
+                                  "".format(self._task_str))
