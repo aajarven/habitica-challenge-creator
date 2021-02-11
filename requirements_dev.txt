@@ -2,5 +2,6 @@ flask
 flask-wtf
 git+git://github.com/aajarven/habitica-helper.git#egg=habitica-helper
 pytest
+pytest-coverage
 pytest-mock
 python-dotenv
