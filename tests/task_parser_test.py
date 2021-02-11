@@ -5,7 +5,8 @@ Tests for task parsing classes.
 import pytest
 
 from functionality.task_parser import (
-        TaskParser, DifficultyParser, TaskFormatError)
+        TaskParser, DifficultyParser, HabitParser, TaskFormatError,
+        TaskTypeError)
 
 
 @pytest.mark.parametrize(
@@ -98,3 +99,23 @@ def test_unexpected_difficulty():
     with pytest.raises(TaskFormatError) as err:
         DifficultyParser("type;title;notes;impossible")
     assert "Unexpected task difficulty 'impossible'" in str(err.value)
+
+
+def test_habit_parser():
+    """
+    Parse a habit using HabitParser
+    """
+    parser = HabitParser("habit;test habit;a note here;easy")
+    assert parser.task_type == "habit"
+    assert parser.name == "test habit"
+    assert parser.notes == "a note here"
+    assert parser.difficulty == "easy"
+
+
+def test_habit_parser_type_validation():
+    """
+    Ensure that a TaskTypeError raises when a non-habit is HabitParsed.
+    """
+    with pytest.raises(TaskTypeError) as err:
+        HabitParser("todo;wrong type habit; note; hard")
+    assert "task with type 'todo' using a parser for habits" in str(err.value)

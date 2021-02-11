@@ -91,6 +91,25 @@ class DifficultyParser(TaskParser):
                                   "".format(self.difficulty))
 
 
+class HabitParser(DifficultyParser):
+    """
+    A parser for habit type tasks.
+    """
+
+    def validate(self):
+        """
+        Validate the task string, raise TaskFormatError on invalid format.
+
+        In addition to all checks done by DifficultyParser, checks that task
+        type is "habit".
+        """
+        super().validate()
+        if self.task_type != "habit":
+            raise TaskTypeError("Attempted to parse a task with type "
+                                "'{}' using a parser for habits."
+                                "".format(self.task_type))
+
+
 class TaskFormatError(ValueError):
     """
     Error for signaling that faulty task format was encountered
