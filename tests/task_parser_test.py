@@ -4,7 +4,7 @@ Tests for task parsing classes.
 
 import pytest
 
-from functionality.task_parser import TaskParser
+from functionality.task_parser import TaskParser, TaskFormatError
 
 
 @pytest.mark.parametrize(
@@ -27,3 +27,12 @@ def test_simple_task(task_type, task_name):
     parser = TaskParser("{};{}".format(task_type, task_name))
     assert parser.task_type == task_type
     assert parser.name == task_name
+
+
+def test_invalid_task():
+    """
+    Ensure that a TaskFormatError is raised when an invalid task is given.
+    """
+    with pytest.raises(TaskFormatError):
+        TaskParser("daily that doesn't have a semicolon separating the type "
+                   "and name")
