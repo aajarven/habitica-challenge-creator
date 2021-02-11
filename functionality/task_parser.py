@@ -50,3 +50,54 @@ class TaskParser():
                                   "a valid task with task type, name and note"
                                   "in it, separated by a semicolon (;)."
                                   "".format(self._task_str))
+
+
+class DifficultyParser(TaskParser):
+    """
+    Parser that is able to extract data for tasks with difficulty value.
+
+    The format for a task is `type; title; notes; difficulty`.
+
+    This parser is not supposed to be used as is, but to be subclassed instead.
+    """
+
+    @property
+    def difficulty(self):
+        """
+        Return task difficulty.
+        """
+        return self._task_str.split(";")[3].lower().strip()
+
+    def validate(self):
+        """
+        Validate the task string, raise TaskFormatError on invalid format.
+
+        Check that:
+         - there are four parts in the task string
+         - the difficulty is one of the allowed values
+        """
+        super().validate()
+        if len(self._task_str.split(";")) < 4:
+            raise TaskFormatError("Task string '{}' does not seem to "
+                                  "contain a valid {}: they must "
+                                  "have at least four attributes (type, "
+                                  "title, notes and difficulty) "
+                                  "separated by a semicolon (;)"
+                                  "".format(self._task_str, self.task_type))
+        if self.difficulty not in ["trivial", "easy", "medium", "hard"]:
+            raise TaskFormatError("Unexpected task difficulty '{}' "
+                                  "encountered. Only values trivial, easy, "
+                                  "medium and hard are allowed."
+                                  "".format(self.difficulty))
+
+
+class TaskFormatError(ValueError):
+    """
+    Error for signaling that faulty task format was encountered
+    """
+
+
+class TaskTypeError(TypeError):
+    """
+    Error for signaling that a wrong type of task was given to a parser.
+    """

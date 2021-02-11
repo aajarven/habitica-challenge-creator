@@ -4,7 +4,8 @@ Tests for task parsing classes.
 
 import pytest
 
-from functionality.task_parser import TaskParser, TaskFormatError
+from functionality.task_parser import (
+        TaskParser, DifficultyParser, TaskFormatError)
 
 
 @pytest.mark.parametrize(
@@ -45,6 +46,7 @@ def test_task_name_whitespace_strip():
     parser = TaskParser("habit; that needs whitespace strip ;notes")
     assert parser.name == "that needs whitespace strip"
 
+
 def test_case_insensitive_task_type():
     """
     Ensure that task type is not case sensitive but is converted to lowercase
@@ -60,3 +62,39 @@ def test_invalid_task():
     with pytest.raises(TaskFormatError):
         TaskParser("daily that doesn't have a semicolon separating the type "
                    "and name")
+
+
+@pytest.mark.parametrize(
+        ["difficulty_input", "expected_difficulty"],
+        [
+            ("trivial", "trivial"),
+            ("easy", "easy"),
+            ("medium", "medium"),
+            ("hard", "hard"),
+            ("TRIVIAL", "trivial"),
+            ("  easy    ", "easy"),
+        ])
+def test_difficulty_parser(difficulty_input, expected_difficulty):
+    """
+    Test task difficulty parsing.
+    """
+    parser = DifficultyParser("type;title;notes;{}".format(difficulty_input))
+    assert parser.difficulty == expected_difficulty
+
+
+def test_missing_difficulty():
+    """
+    Ensure that a TaskFormatError is raised when difficulty is not given
+    """
+    with pytest.raises(TaskFormatError) as err:
+        DifficultyParser("type;title; no difficulty here =(")
+    assert "at least four attributes" in str(err.value)
+
+
+def test_unexpected_difficulty():
+    """
+    Ensure that a TaskFormatError is raised for an invalid difficulty
+    """
+    with pytest.raises(TaskFormatError) as err:
+        DifficultyParser("type;title;notes;impossible")
+    assert "Unexpected task difficulty 'impossible'" in str(err.value)
