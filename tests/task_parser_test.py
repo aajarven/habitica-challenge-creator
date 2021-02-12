@@ -184,3 +184,55 @@ def test_daily_parser():
                              "f": False,
                              "s": True,
                              "su": True}
+
+
+@pytest.mark.parametrize(
+    ["task_str", "expected_error_str"],
+    [
+        (
+            "daily;name;note;hard;2.1.2021;weekly;1",
+            "does not seem to contain a valid daily"
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;annually;1;MTWHAS",
+            "Illegal frequency value"
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;weekly;0;MTWHAS",
+            "cannot be zero or negative"
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;daily;three;MTWHAS",
+            "Illegal every_x value \"three\""
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;weekly;2;MTWHAS",
+            "value other than 1 only when frequency is \"daily\""
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;weekly;1;MTWHFASS",
+            "Illegal weekday marker"
+            ),
+        (
+            "daily;name;note;hard;2.1.2021;weekly;1;MTKFAS",
+            "Illegal weekday marker"
+            ),
+    ]
+)
+def test_daily_format_validation(task_str, expected_error_str):
+    """
+    Test that a TaskFormatError is raised for malformed task strings.
+    """
+    with pytest.raises(TaskFormatError) as err:
+        DailyParser(task_str)
+    assert expected_error_str in str(err.value)
+
+
+def test_daily_task_type_validation():
+    """
+    Test that TaskTypeError raising with non-daily parsed using DailyParser
+    """
+    with pytest.raises(TaskTypeError) as err:
+        DailyParser("habit;name;note;hard;2.1.2021;weekly;1;MTWHAS")
+    assert ("task with type 'habit' using a parser for dailies"
+            in str(err.value))

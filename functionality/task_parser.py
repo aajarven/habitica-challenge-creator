@@ -3,6 +3,7 @@ Extract the task data from user input.
 """
 
 import datetime
+import re
 
 
 class TaskParser():
@@ -199,7 +200,13 @@ class DailyParser(DifficultyParser):
 
         Values other than 1 are only allowed when frequency is set to "daily".
         """
-        return int(self._task_str.split(";")[6].strip())
+        every_x_str = self._task_str.split(";")[6].strip()
+        try:
+            return int(every_x_str)
+        except ValueError as err:
+            raise TaskFormatError("Illegal every_x value \"{}\" encountered: "
+                                  "the value must be an integer."
+                                  "".format(every_x_str)) from err
 
     @property
     def repeat(self):
@@ -219,9 +226,9 @@ class DailyParser(DifficultyParser):
         with their boolean values representing whether the daily should occur
         on that day.
 
-        Only allowed when frequency is set to "weekly".
+        Only has an effect when frequency is set to "weekly".
         """
-        day_str = self._task_str.split(";")[7].strip().upper()
+        day_str = self._repeat_str()
         return {
                 "m": "M" in day_str,
                 "t": "T" in day_str,
@@ -231,6 +238,55 @@ class DailyParser(DifficultyParser):
                 "s": "A" in day_str,
                 "su": "S" in day_str,
                 }
+
+    def _repeat_str(self):
+        """
+        Return the string from which `repeat` should be parsed from.
+        """
+        return self._task_str.split(";")[7].strip().upper()
+
+    def validate(self):
+        """
+        In addition to all checks done by DifficultyParser, checks that:
+        - task type is "daily"
+        - task string has 8 fields separated with a semicolon
+        - task has a valid start date
+        - `frequency` is one of the allowed values
+        - `every_x` is a positive integer
+        - if `frequency` is not "daily", `every_x` is 1
+        - all letters in `repeat` are legal weekday markers
+        """
+        super().validate()
+        if self.task_type != "daily":
+            raise TaskTypeError("Attempted to parse a task with type "
+                                "'{}' using a parser for dailies."
+                                "".format(self.task_type))
+        if len(self._task_str.split(";")) != 8:
+            raise TaskFormatError("Task string '{}' does not seem to "
+                                  "contain a valid daily: they must "
+                                  "have eight attributes (type, "
+                                  "title, notes, difficulty, start date, "
+                                  "frequency, every_x and repeat) "
+                                  "separated by a semicolon (;)"
+                                  "".format(self._task_str))
+        self.start_date  # pylint: disable=pointless-statement
+        if self.frequency not in ["daily", "weekly", "monthly", "yearly"]:
+            raise TaskFormatError("Illegal frequency value \"{}\" "
+                                  "encountered. Allowed values are \"daily\", "
+                                  "\"weekly\", \"monthly\" and \"yearly\"."
+                                  "".format(self.frequency))
+        if self.every_x < 1:
+            raise TaskFormatError("Value of every_x cannot be zero or "
+                                  "negative.")
+        if self.frequency != "daily" and self.every_x != 1:
+            raise TaskFormatError("every_x can be set to a value other than 1 "
+                                  "only when frequency is \"daily\".")
+        if not re.match(r"\b(?!(?:.\B)*(.)(?:\B.)*\1)[MTWHFSA]+\b",
+                        self._repeat_str()):
+            raise TaskFormatError("Illegal weekday marker found in repeat "
+                                  "value {}. Legal weekday markers are M, T, "
+                                  "W, H, F, A and S."
+                                  "".format(self._repeat_str()))
 
 
 class TaskFormatError(ValueError):
