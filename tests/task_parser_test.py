@@ -12,7 +12,7 @@ from functionality.task_parser import (
 
 
 @pytest.mark.parametrize(
-        ["task_type", "task_name", "notes"],
+        ["tasktype", "task_name", "notes"],
         [
             ("daily", "test", "note"),
             ("todo", "todoname", "another note"),
@@ -21,25 +21,25 @@ from functionality.task_parser import (
             ("daily", "test longer name", "note here"),
             ("daily", "test dïfficúlt näme", "härd nötes äre härd"),
         ])
-def test_simple_task(task_type, task_name, notes):
+def test_simple_task(tasktype, task_name, notes):
     """
     Test TaskParser with the simplest possible task.
 
-    Ensure that task_type and name are determined as they should be according
+    Ensure that tasktype and name are determined as they should be according
     to the only currently allowed task syntax pattern.
     """
-    parser = TaskParser("{};{};{}".format(task_type, task_name, notes))
-    assert parser.task_type == task_type.lower()
-    assert parser.name == task_name
+    parser = TaskParser("{};{};{}".format(tasktype, task_name, notes))
+    assert parser.tasktype == tasktype.lower()
+    assert parser.text == task_name
     assert parser.notes == notes
 
 
-def test_task_type_whitespace_strip():
+def test_tasktype_whitespace_strip():
     """
     Ensure that whitespace around task type is ignored
     """
     parser = TaskParser(" habit    ;that needs whitespace strip;note")
-    assert parser.task_type == "habit"
+    assert parser.tasktype == "habit"
 
 
 def test_task_name_whitespace_strip():
@@ -47,15 +47,15 @@ def test_task_name_whitespace_strip():
     Ensure that whitespace around task name is ignored
     """
     parser = TaskParser("habit; that needs whitespace strip ;notes")
-    assert parser.name == "that needs whitespace strip"
+    assert parser.text == "that needs whitespace strip"
 
 
-def test_case_insensitive_task_type():
+def test_case_insensitive_tasktype():
     """
     Ensure that task type is not case sensitive but is converted to lowercase
     """
     parser = TaskParser("HABIT;test case-insensitive type;note")
-    assert parser.task_type == "habit"
+    assert parser.tasktype == "habit"
 
 
 def test_invalid_task():
@@ -108,8 +108,8 @@ def test_habit_parser():
     Parse a habit using HabitParser
     """
     parser = HabitParser("habit;test habit;a note here;easy")
-    assert parser.task_type == "habit"
-    assert parser.name == "test habit"
+    assert parser.tasktype == "habit"
+    assert parser.text == "test habit"
     assert parser.notes == "a note here"
     assert parser.difficulty == "easy"
 
@@ -128,8 +128,8 @@ def test_todo_parser():
     Parse a valid todo
     """
     parser = TodoParser("todo; name; notes; medium; 29.12.2020")
-    assert parser.task_type == "todo"
-    assert parser.name == "name"
+    assert parser.tasktype == "todo"
+    assert parser.text == "name"
     assert parser.notes == "notes"
     assert parser.difficulty == "medium"
     assert isinstance(parser.date, datetime.date)
@@ -169,8 +169,8 @@ def test_daily_parser():
     """
     parser = DailyParser("daily; name; notes; medium; 29.12.2020; weekly; 1;"
                          "MTWAS")
-    assert parser.task_type == "daily"
-    assert parser.name == "name"
+    assert parser.tasktype == "daily"
+    assert parser.text == "name"
     assert parser.notes == "notes"
     assert parser.difficulty == "medium"
     assert isinstance(parser.start_date, datetime.date)
@@ -228,7 +228,7 @@ def test_daily_format_validation(task_str, expected_error_str):
     assert expected_error_str in str(err.value)
 
 
-def test_daily_task_type_validation():
+def test_daily_tasktype_validation():
     """
     Test that TaskTypeError raising with non-daily parsed using DailyParser
     """
@@ -236,3 +236,14 @@ def test_daily_task_type_validation():
         DailyParser("habit;name;note;hard;2.1.2021;weekly;1;MTWHAS")
     assert ("task with type 'habit' using a parser for dailies"
             in str(err.value))
+
+
+def test_habit_dict():
+    """
+    Test that provided values are returned as the task dict fror a habit.
+    """
+    parser = HabitParser("habit;test habit;a note here;easy")
+    assert parser.task_dict == {"tasktype": "habit",
+                                "text": "test habit",
+                                "notes": "a note here",
+                                "difficulty": "easy"}

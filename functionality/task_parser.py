@@ -11,6 +11,8 @@ class TaskParser():
     Base parser that can just parse task type and name of the task.
     """
 
+    task_properties = []
+
     def __init__(self, task_str):
         """
         Create the parser.
@@ -21,14 +23,24 @@ class TaskParser():
         self.validate()
 
     @property
-    def task_type(self):
+    def task_dict(self):
+        """
+        Return a dict representing the properties of the task.
+        """
+        task_dict = {}
+        for task_property in self.task_properties:
+            task_dict[task_property] = getattr(self, task_property)
+        return task_dict
+
+    @property
+    def tasktype(self):
         """
         Return the task type.
         """
         return self._task_str.split(";")[0].lower().strip()
 
     @property
-    def name(self):
+    def text(self):
         """
         Return the name of the task.
         """
@@ -106,7 +118,7 @@ class DifficultyParser(TaskParser):
                                   "have at least four attributes (type, "
                                   "title, notes and difficulty) "
                                   "separated by a semicolon (;)"
-                                  "".format(self._task_str, self.task_type))
+                                  "".format(self._task_str, self.tasktype))
         if self.difficulty not in ["trivial", "easy", "medium", "hard"]:
             raise TaskFormatError("Unexpected task difficulty '{}' "
                                   "encountered. Only values trivial, easy, "
@@ -119,6 +131,13 @@ class HabitParser(DifficultyParser):
     A parser for habit type tasks.
     """
 
+    task_properties = [
+                       "text",
+                       "tasktype",
+                       "notes",
+                       "difficulty",
+                       ]
+
     def validate(self):
         """
         Validate the task string, raise TaskFormatError on invalid format.
@@ -127,10 +146,10 @@ class HabitParser(DifficultyParser):
         type is "habit".
         """
         super().validate()
-        if self.task_type != "habit":
+        if self.tasktype != "habit":
             raise TaskTypeError("Attempted to parse a task with type "
                                 "'{}' using a parser for habits."
-                                "".format(self.task_type))
+                                "".format(self.tasktype))
 
 
 class TodoParser(DifficultyParser):
@@ -155,10 +174,10 @@ class TodoParser(DifficultyParser):
         - task has a valid due date
         """
         super().validate()
-        if self.task_type != "todo":
+        if self.tasktype != "todo":
             raise TaskTypeError("Attempted to parse a task with type "
                                 "'{}' using a parser for todos."
-                                "".format(self.task_type))
+                                "".format(self.tasktype))
         if len(self._task_str.split(";")) != 5:
             raise TaskFormatError("Task string '{}' does not seem to "
                                   "contain a valid todo: they must "
@@ -257,10 +276,10 @@ class DailyParser(DifficultyParser):
         - all letters in `repeat` are legal weekday markers
         """
         super().validate()
-        if self.task_type != "daily":
+        if self.tasktype != "daily":
             raise TaskTypeError("Attempted to parse a task with type "
                                 "'{}' using a parser for dailies."
-                                "".format(self.task_type))
+                                "".format(self.tasktype))
         if len(self._task_str.split(";")) != 8:
             raise TaskFormatError("Task string '{}' does not seem to "
                                   "contain a valid daily: they must "
