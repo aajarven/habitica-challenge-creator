@@ -31,11 +31,11 @@ And description here
 Getting Organized;Creativity
 0
 Tasks
-Daily;Daily 1;An easy everyday task;Easy;1/1/2021;Weekly;1;SMTWHFA
+Daily;Daily 1;An easy everyday task;Easy;1.1.2021;Weekly;1;SMTWHFA
 Habit;Habit 1;A medium habit;Medium
-Daily;Daily 2;A hard daily for weekdays;Hard;1/1/2021;Weekly;1;MTWHF
-Habit;To-Do 1;A hard todo, due by the end of February;Hard;2/28/2021
-Daily;To-Do 2;An easy daily to be done on the 15th of February;Easy;2/15/2021;Weekly;1;0
+Daily;Daily 2;A hard daily for weekdays;Hard;1.1.2021;Weekly;1;MTWHF
+Habit;To-Do 1;A hard todo, due by the end of February;Hard;28.2.2021
+Daily;To-Do 2;An easy daily to be done on the 15th of February;Easy;15.2.2021;Weekly;1;0
 End Tasks
 ```
 

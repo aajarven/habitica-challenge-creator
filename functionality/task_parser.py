@@ -122,15 +122,15 @@ class TodoParser(DifficultyParser):
         """
         Due date for the task as a Date object.
 
-        Given in format MM/DD/YYY.
+        Given in format DD.MM.YYYY.
         """
         date_str = self._task_str.split(";")[4].strip()
         try:
-            return datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
+            return datetime.datetime.strptime(date_str, "%d.%m.%Y").date()
         except ValueError as err:
             raise (
                 TaskFormatError("Unexpected due date value '{}' encountered. "
-                                "Dates must be given in format MM/DD/YYYY."
+                                "Dates must be given in format 'DD.MM.YYYY'."
                                 "".format(date_str))
                 ) from err
 

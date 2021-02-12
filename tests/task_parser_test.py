@@ -127,7 +127,7 @@ def test_todo_parser():
     """
     Parse a valid todo
     """
-    parser = TodoParser("todo; name; notes; medium; 12/29/2020")
+    parser = TodoParser("todo; name; notes; medium; 29.12.2020")
     assert parser.task_type == "todo"
     assert parser.name == "name"
     assert parser.notes == "notes"

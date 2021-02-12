@@ -21,15 +21,15 @@ def valid_challenge_string():
             "Getting Organized;Creativity\n"
             "123\n"
             "Tasks\n"
-            "Daily;Daily 1;An easy everyday task;Easy;1/1/2021;Weekly;1;"
+            "Daily;Daily 1;An easy everyday task;Easy;1.1.2021;Weekly;1;"
             "SMTWHFA\n"
             "Habit;Habit 1;A medium habit;Medium\n"
-            "Daily;Daily 2;A hard daily for weekdays;Hard;1/1/2021;Weekly;1;"
+            "Daily;Daily 2;A hard daily for weekdays;Hard;1.1.2021;Weekly;1;"
             "MTWHF\n"
             "To Do;To-Do 1;A hard todo, due by the end of February;Hard;"
-            "2/28/2021\n"
+            "28.2.2021\n"
             "Daily;To-Do 2;An easy daily to be done on the 15th of February;"
-            "Easy;2/15/2021;Weekly;1;0\n"
+            "Easy;15.2.2021;Weekly;1;0\n"
             "Habit;Habit 2;Another medium habit;Medium\n"
             "End Tasks"
             )
@@ -99,7 +99,7 @@ def test_multi_line_summary():
                  "Creativity\n"
                  "three\n"  # non-numerical prize!
                  "Tasks\n"
-                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "Daily;daily;-;Easy;1.1.2021;Weekly;1;SMTWHFA\n"
                  "End Tasks")
     expected_summary = ("Summary here\n\n"
                         "and another paragraph\n"
@@ -130,7 +130,7 @@ def test_multi_line_description():
                  "Creativity\n"
                  "three\n"  # non-numerical prize!
                  "Tasks\n"
-                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "Daily;daily;-;Easy;1.1.2021;Weekly;1;SMTWHFA\n"
                  "End Tasks")
     expected_description = ("And description here\n"
                             "with some newlines\n\n"
@@ -167,7 +167,7 @@ def test_non_numeric_prize():
                  "Creativity\n"
                  "three\n"  # non-numerical prize!
                  "Tasks\n"
-                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "Daily;daily;-;Easy;/2021;Weekly;1;SMTWHFA\n"
                  "End Tasks")
     creator = ChallengeCreator(challenge)
     with pytest.raises(ValueError) as err:
@@ -187,28 +187,31 @@ def test_non_integer_prize():
                  "Creativity\n"
                  "1.2\n"  # non-integer prize!
                  "Tasks\n"
-                 "Daily;daily;-;Easy;1/1/2021;Weekly;1;SMTWHFA\n"
+                 "Daily;daily;-;Easy;1.1.2021;Weekly;1;SMTWHFA\n"
                  "End Tasks")
     creator = ChallengeCreator(challenge)
     with pytest.raises(ValueError) as err:
         prize = creator.prize  # noqa: F841 pylint: disable=unused-variable
     assert "Invalid gem prize value 1.2 encountered" in str(err.value)
 
+
 def test_task_strings(valid_challenge_string):
     """
     Test that the private _task_strings function extracts the correct lines.
     """
     expected_task_strings = [
-        "Daily;Daily 1;An easy everyday task;Easy;1/1/2021;Weekly;1;SMTWHFA",
+        "Daily;Daily 1;An easy everyday task;Easy;1.1.2021;Weekly;1;SMTWHFA",
         "Habit;Habit 1;A medium habit;Medium",
-        "Daily;Daily 2;A hard daily for weekdays;Hard;1/1/2021;Weekly;1;MTWHF",
-        "To Do;To-Do 1;A hard todo, due by the end of February;Hard;2/28/2021",
+        "Daily;Daily 2;A hard daily for weekdays;Hard;1.1.2021;Weekly;1;MTWHF",
+        "To Do;To-Do 1;A hard todo, due by the end of February;Hard;28.2.2021",
         "Daily;To-Do 2;An easy daily to be done on the 15th of February;"
-        "Easy;2/15/2021;Weekly;1;0",
+        "Easy;15.2.2021;Weekly;1;0",
         "Habit;Habit 2;Another medium habit;Medium"
         ]
     creator = ChallengeCreator(valid_challenge_string)
+    # pylint: disable=protected-access
     assert creator._task_strings() == expected_task_strings
+
 
 def test_challenge_creation(valid_challenge_string, valid_challenge_dict,
                             header, mocker):
@@ -224,6 +227,7 @@ def test_challenge_creation(valid_challenge_string, valid_challenge_dict,
     post_challenge.assert_called_with("https://habitica.com/api/v3/challenges",
                                       data=valid_challenge_dict,
                                       headers=header)
+
 
 def test_to_ordered_dict(valid_challenge_string):
     """
