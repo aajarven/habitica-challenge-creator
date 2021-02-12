@@ -53,6 +53,26 @@ class TaskParser():
                                   "in it, separated by a semicolon (;)."
                                   "".format(self._task_str))
 
+    def _parse_date(self, date_str, field):  # pylint: disable=no-self-use
+        """
+        Return a Date corresponding to the given string.
+
+        Given in format DD.MM.YYYY. Raises a TaskFormatError with a descriptive
+        error message if date cannot be parsed.
+
+        :date_str: string in dd.mm.yyyy format
+        :field: name of the property for which the date is parsed, used in the
+                error message
+        """
+        try:
+            return datetime.datetime.strptime(date_str, "%d.%m.%Y").date()
+        except ValueError as err:
+            raise (
+                TaskFormatError("Unexpected {} value '{}' encountered. "
+                                "Dates must be given in format 'DD.MM.YYYY'."
+                                "".format(field, date_str))
+                ) from err
+
 
 class DifficultyParser(TaskParser):
     """
@@ -125,14 +145,7 @@ class TodoParser(DifficultyParser):
         Given in format DD.MM.YYYY.
         """
         date_str = self._task_str.split(";")[4].strip()
-        try:
-            return datetime.datetime.strptime(date_str, "%d.%m.%Y").date()
-        except ValueError as err:
-            raise (
-                TaskFormatError("Unexpected due date value '{}' encountered. "
-                                "Dates must be given in format 'DD.MM.YYYY'."
-                                "".format(date_str))
-                ) from err
+        return self._parse_date(date_str, "due date")
 
     def validate(self):
         """
@@ -153,6 +166,71 @@ class TodoParser(DifficultyParser):
                                   "separated by a semicolon (;)"
                                   "".format(self._task_str))
         self.date  # pylint: disable=pointless-statement
+
+
+class DailyParser(DifficultyParser):
+    """
+    A parser for dailies
+    """
+
+    @property
+    def start_date(self):
+        """
+        Start date for the task as a Date object.
+
+        Given in format DD.MM.YYYY.
+        """
+        date_str = self._task_str.split(";")[4].strip()
+        return self._parse_date(date_str, "start date")
+
+    @property
+    def frequency(self):
+        """
+        Frequency of the daily.
+
+        Allowed values are "daily", "weekly", "monthly" and "yearly".
+        """
+        return self._task_str.split(";")[5].strip().lower()
+
+    @property
+    def every_x(self):
+        """
+        Number of days between occurrences for a daily.
+
+        Values other than 1 are only allowed when frequency is set to "daily".
+        """
+        return int(self._task_str.split(";")[6].strip())
+
+    @property
+    def repeat(self):
+        """
+        Reads a lits of weekday letters and returns a weekday dict for the API.
+
+        Days of the week in the input are depicted as follows:
+          - M = Monday
+          - T = Tuesday
+          - W = Wednesday
+          - H = Thursday
+          - F = Friday
+          - A = Saturday
+          - S = Sunday
+        And for the output the day abbreviations are "m", "t", "w", "th", "f",
+        "s" and "su". The abbreviations are used as keys in the returned dict,
+        with their boolean values representing whether the daily should occur
+        on that day.
+
+        Only allowed when frequency is set to "weekly".
+        """
+        day_str = self._task_str.split(";")[7].strip().upper()
+        return {
+                "m": "M" in day_str,
+                "t": "T" in day_str,
+                "w": "W" in day_str,
+                "th": "H" in day_str,
+                "f": "F" in day_str,
+                "s": "A" in day_str,
+                "su": "S" in day_str,
+                }
 
 
 class TaskFormatError(ValueError):

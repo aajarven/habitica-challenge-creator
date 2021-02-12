@@ -7,7 +7,7 @@ import datetime
 import pytest
 
 from functionality.task_parser import (
-        TaskParser, DifficultyParser, HabitParser, TodoParser,
+        TaskParser, DifficultyParser, HabitParser, TodoParser, DailyParser,
         TaskFormatError, TaskTypeError)
 
 
@@ -161,3 +161,26 @@ def test_todo_parser_wrong_type():
     with pytest.raises(TaskTypeError) as err:
         TodoParser("habit;wrong type todo; note; hard")
     assert "task with type 'habit' using a parser for todos" in str(err.value)
+
+
+def test_daily_parser():
+    """
+    Test parsing a daily.
+    """
+    parser = DailyParser("daily; name; notes; medium; 29.12.2020; weekly; 1;"
+                         "MTWAS")
+    assert parser.task_type == "daily"
+    assert parser.name == "name"
+    assert parser.notes == "notes"
+    assert parser.difficulty == "medium"
+    assert isinstance(parser.start_date, datetime.date)
+    assert parser.start_date == datetime.date(2020, 12, 29)
+    assert parser.frequency == "weekly"
+    assert parser.every_x == 1
+    assert parser.repeat == {"m": True,
+                             "t": True,
+                             "w": True,
+                             "th": False,
+                             "f": False,
+                             "s": True,
+                             "su": True}
